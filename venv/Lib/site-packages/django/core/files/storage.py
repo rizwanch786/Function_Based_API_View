@@ -66,7 +66,7 @@ class Storage:
         character alphanumeric string (before the file extension, if one
         exists) to the filename.
         """
-        return '%s_%s%s' % (file_root, get_random_string(7), file_ext)
+        return f'{file_root}_{get_random_string(7)}{file_ext}'
 
     def get_available_name(self, name, max_length=None):
         """
@@ -247,7 +247,7 @@ class FileSystemStorage(Storage):
             else:
                 os.makedirs(directory, exist_ok=True)
         except FileExistsError:
-            raise FileExistsError('%s exists and is not a directory.' % directory)
+            raise FileExistsError(f'{directory} exists and is not a directory.')
 
         # There's a potential race condition between get_available_name and
         # saving the file; it's possible that two threads might return the

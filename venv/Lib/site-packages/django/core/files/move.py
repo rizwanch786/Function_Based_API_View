@@ -43,7 +43,10 @@ def file_move_safe(old_file_name, new_file_name, chunk_size=1024 * 64, allow_ove
 
     try:
         if not allow_overwrite and os.access(new_file_name, os.F_OK):
-            raise FileExistsError('Destination file %s exists and allow_overwrite is False.' % new_file_name)
+            raise FileExistsError(
+                f'Destination file {new_file_name} exists and allow_overwrite is False.'
+            )
+
 
         os.rename(old_file_name, new_file_name)
         return
@@ -55,8 +58,16 @@ def file_move_safe(old_file_name, new_file_name, chunk_size=1024 * 64, allow_ove
     # first open the old file, so that it won't go away
     with open(old_file_name, 'rb') as old_file:
         # now open the new file, not forgetting allow_overwrite
-        fd = os.open(new_file_name, (os.O_WRONLY | os.O_CREAT | getattr(os, 'O_BINARY', 0) |
-                                     (os.O_EXCL if not allow_overwrite else 0)))
+        fd = os.open(
+            new_file_name,
+            (
+                os.O_WRONLY
+                | os.O_CREAT
+                | getattr(os, 'O_BINARY', 0)
+                | (0 if allow_overwrite else os.O_EXCL)
+            ),
+        )
+
         try:
             locks.lock(fd, locks.LOCK_EX)
             current_chunk = None

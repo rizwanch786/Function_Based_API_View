@@ -15,44 +15,39 @@ def student_api(request, pk = None):
         if id is not None:
             stu = Student.objects.get(pk = id)
             serializer = StudentSerializer(stu)
-            return Response(serializer.data)
         else:
             stu = Student.objects.all()
             serializer = StudentSerializer(stu, many = True)
-            return Response(serializer.data)
-    
+        return Response(serializer.data)
     if request.method == 'POST':
         serializer = StudentSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response({'msg': 'Successful Created'}, status=status.HTTP_201_CREATED)
-        else:
+        if not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+        serializer.save()
+        return Response({'msg': 'Successful Created'}, status=status.HTTP_201_CREATED)
     if request.method == 'PUT':
         # id = request.data.get('id')
         id = pk
         if id is not None:
             stu = Student.objects.get(pk = id)
             serializer = StudentSerializer(stu, data = request.data)
-            if serializer.is_valid():
-                serializer.save()
-                return Response({'msg': 'Complete Data Successful Updated'}, status=status.HTTP_200_OK)
-            else:
+            if not serializer.is_valid():
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+
+            serializer.save()
+            return Response({'msg': 'Complete Data Successful Updated'}, status=status.HTTP_200_OK)
     if request.method == 'PATCH':
         # id = request.data.get('id')
         id = pk
         if id is not None:
             stu = Student.objects.get(pk = id)
             serializer = StudentSerializer(stu, data = request.data, partial = True)
-            if serializer.is_valid():
-                serializer.save()
-                return Response({'msg': 'Partial Data Successful Updated'}, status=status.HTTP_200_OK)
-            else:
+            if not serializer.is_valid():
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        
+
+            serializer.save()
+            return Response({'msg': 'Partial Data Successful Updated'}, status=status.HTTP_200_OK)
     if request.method == 'DELETE':
         # id = request.data.get('id')
         id = pk
