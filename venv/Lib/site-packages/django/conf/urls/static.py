@@ -24,5 +24,9 @@ def static(prefix, view=serve, **kwargs):
         # No-op if not in debug mode or a non-local prefix.
         return []
     return [
-        re_path(r'^%s(?P<path>.*)$' % re.escape(prefix.lstrip('/')), view, kwargs=kwargs),
+        re_path(
+            f"^{re.escape(prefix.lstrip('/'))}(?P<path>.*)$",
+            view,
+            kwargs=kwargs,
+        )
     ]
